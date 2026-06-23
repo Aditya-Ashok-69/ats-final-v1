@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+pymupdf
+python-docx
+python-dotenv
+groq
+json-repair
+jinja2
