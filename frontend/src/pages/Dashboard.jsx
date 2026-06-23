@@ -19,30 +19,25 @@ function ScoreHistogram({ buckets }) {
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 80, marginTop: 12 }}>
+    <div className="score-histogram">
       {buckets.map((b) => (
-        <div key={b.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-          {b.count > 0 && (
-            <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--ink)' }}>{b.count}</span>
-          )}
+        <div key={b.label} className="hist-column">
+          <span className="hist-count">{b.count}</span>
           <div
             title={`Score ${b.label}: ${b.count} applicant${b.count !== 1 ? 's' : ''}`}
+            className="hist-bar"
             style={{
-              width: '100%',
-              height: `${Math.max(4, (b.count / max) * 60)}px`,
+              height: `${Math.max(18, (b.count / max) * 120)}px`,
               background: b.count ? barColor(b.min) : 'var(--line)',
-              borderRadius: '4px 4px 0 0',
-              transition: 'height 0.3s ease',
             }}
           />
-          <span style={{ fontSize: 9, color: 'var(--muted)', writingMode: 'vertical-rl', transform: 'rotate(180deg)', height: 28 }}>
-            {b.label}
-          </span>
+          <span className="hist-label">{b.label}</span>
         </div>
       ))}
     </div>
   );
 }
+
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);

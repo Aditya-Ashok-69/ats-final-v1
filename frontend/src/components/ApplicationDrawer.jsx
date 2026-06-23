@@ -236,22 +236,22 @@ export default function ApplicationDrawer({ applicationId, onClose, onChanged })
 
   return (
     <div className="overlay" onClick={onClose}>
-      <div className="drawer" onClick={(e) => e.stopPropagation()}>
+      <div className="dialog-panel" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
         {error && <div className="error">{error}</div>}
         {!app ? (
           <div className="empty">Loading…</div>
         ) : (
           <>
-            <div className="drawer-head">
+            <div className="dialog-head">
               <div>
                 <h2>{app.candidate.name}</h2>
                 <div className="subtle">{app.candidate.email} · {app.job.title}</div>
               </div>
-              <button className="btn btn-ghost" onClick={onClose}>Close</button>
+              <button className="btn btn-ghost" onClick={onClose} aria-label="Close dialog">Close</button>
             </div>
 
             {/* Match score */}
-            <div className="drawer-section">
+            <div className="dialog-section">
               <div className="section-title">
                 Match score
                 {app.matchScore != null && (
@@ -289,7 +289,7 @@ export default function ApplicationDrawer({ applicationId, onClose, onChanged })
             </div>
 
             {/* Interviews */}
-            <div className="drawer-section">
+            <div className="dialog-section">
               <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 Interviews
                 {maxRounds > 0 && (
@@ -346,7 +346,7 @@ export default function ApplicationDrawer({ applicationId, onClose, onChanged })
 
             {/* Offer letter */}
             {canGenerateOffer && (
-              <div className="drawer-section">
+              <div className="dialog-section">
                 <div className="section-title">Offer letter</div>
                 <OfferLetterButton applicationId={app.id} />
               </div>
@@ -355,7 +355,7 @@ export default function ApplicationDrawer({ applicationId, onClose, onChanged })
             <EmailDraft draft={draft} />
 
             {/* Activity log */}
-            <div className="drawer-section">
+            <div className="dialog-section">
               <div className="section-title">Activity</div>
               {app.activityLogs.map((log) => (
                 <div key={log.id} className="activity-row">
