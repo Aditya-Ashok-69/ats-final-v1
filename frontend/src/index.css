@@ -1,0 +1,323 @@
+/* ---- Design tokens ----
+   A recruiting tool should feel calm and legible — recruiters live in it all day.
+   Identity: deep ink + a single confident violet, with gold reserved for the "win"
+   (a hire). Everything quiet so the pipeline board is the one thing that pops. */
+:root {
+  --ink: #181b2a;
+  --primary: #5b3fa8;
+  --primary-strong: #4a3290;
+  --primary-soft: #efeafa;
+  --gold: #b8862f;
+  --gold-soft: #f6edda;
+  --bg: #edeef1;
+  --surface: #ffffff;
+  --line: #e2e3e8;
+  --muted: #6b6e7b;
+  --danger: #b3261e;
+  --danger-soft: #fbeae9;
+
+  /* Pipeline stage accents */
+  --stage-applied: #8a8fa3;
+  --stage-screening: #3f86c7;
+  --stage-interview: #7d5bbf;
+  --stage-offer: #c98a2b;
+  --stage-hired: #2f8f5b;
+  --stage-rejected: #b3261e;
+
+  --radius: 10px;
+  --shadow-sm: 0 1px 2px rgba(24, 27, 42, 0.06);
+  --shadow-md: 0 6px 20px rgba(24, 27, 42, 0.12);
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; letter-spacing: -0.01em; }
+a { color: inherit; text-decoration: none; }
+
+.mono { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+
+/* ---- Buttons ---- */
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.05s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-strong); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover { background: #f4f5f7; }
+.btn-danger { background: transparent; color: var(--danger); border-color: var(--danger-soft); }
+.btn-danger:hover { background: var(--danger-soft); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---- Forms ---- */
+label { display: block; font-weight: 600; font-size: 12px; margin-bottom: 5px; color: var(--ink); }
+input, select, textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--primary-soft);
+  border-color: var(--primary);
+}
+.field { margin-bottom: 14px; }
+
+/* ---- Cards & surfaces ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- App shell ---- */
+.shell { display: grid; grid-template-columns: 224px 1fr; min-height: 100vh; }
+.sidebar {
+  background: var(--ink);
+  color: #c9ccda;
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.brand .dot { width: 11px; height: 11px; border-radius: 3px; background: var(--gold); display: inline-block; }
+.nav-link {
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #c9ccda;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.nav-link:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+.nav-link.active { background: var(--primary); color: #fff; }
+.sidebar-foot { margin-top: auto; font-size: 12px; color: #8b8fa3; }
+
+.main { padding: 28px 34px; overflow: auto; }
+.page-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.page-head h1 { font-size: 24px; }
+.subtle { color: var(--muted); font-size: 13px; }
+
+/* ---- Tables ---- */
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.table td { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: #fafafb; }
+
+/* ---- Badges ---- */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #f0f1f4;
+  color: var(--muted);
+}
+.badge.open { background: #e6f4ec; color: var(--stage-hired); }
+.badge.on_hold { background: var(--gold-soft); color: var(--gold); }
+.badge.closed { background: #f0f1f4; color: var(--muted); }
+
+/* ---- Stat tiles ---- */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 26px; }
+.stat { padding: 18px 20px; }
+.stat .num { font-family: var(--font-display); font-size: 32px; font-weight: 700; line-height: 1; }
+.stat .lbl { color: var(--muted); font-size: 12px; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+.stat.accent .num { color: var(--gold); }
+
+/* ---- Kanban (the signature) ---- */
+.board { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 12px; align-items: flex-start; }
+.column {
+  flex: 0 0 250px;
+  background: #e7e8ec;
+  border-radius: var(--radius);
+  padding: 0 0 10px;
+  max-height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+}
+.column-head {
+  padding: 12px 14px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 3px solid var(--stage-applied);
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--surface);
+}
+.column[data-stage='APPLIED'] .column-head { border-top-color: var(--stage-applied); }
+.column[data-stage='SCREENING'] .column-head { border-top-color: var(--stage-screening); }
+.column[data-stage='INTERVIEW'] .column-head { border-top-color: var(--stage-interview); }
+.column[data-stage='OFFER'] .column-head { border-top-color: var(--stage-offer); }
+.column[data-stage='HIRED'] .column-head { border-top-color: var(--stage-hired); }
+.column[data-stage='REJECTED'] .column-head { border-top-color: var(--stage-rejected); }
+.column-head h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+.column-head .count { font-size: 12px; color: var(--muted); font-weight: 600; }
+.column-body { padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 9px; flex: 1; min-height: 60px; }
+.column.drag-over .column-body { background: var(--primary-soft); border-radius: 8px; }
+
+.cand-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 11px 12px;
+  cursor: grab;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.12s ease, transform 0.05s ease;
+}
+.cand-card:hover { box-shadow: var(--shadow-md); }
+.cand-card:active { cursor: grabbing; }
+.cand-card.dragging { opacity: 0.4; }
+.cand-card .name { font-weight: 600; font-size: 13px; }
+.cand-card .meta { color: var(--muted); font-size: 12px; margin-top: 3px; }
+.cand-card .chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.chip { font-size: 10px; font-weight: 600; color: var(--muted); background: #f0f1f4; padding: 2px 7px; border-radius: 5px; }
+
+/* ---- Auth ---- */
+.auth-wrap { min-height: 100vh; display: grid; place-items: center; background: var(--ink); padding: 20px; }
+.auth-card { width: 100%; max-width: 360px; background: var(--surface); padding: 30px; border-radius: 14px; box-shadow: var(--shadow-md); }
+.auth-card .brand { color: var(--ink); justify-content: center; }
+.auth-hint { margin-top: 16px; font-size: 12px; color: var(--muted); text-align: center; }
+
+/* ---- Modal ---- */
+.overlay { position: fixed; inset: 0; background: rgba(24, 27, 42, 0.45); display: grid; place-items: center; z-index: 50; padding: 20px; }
+.modal { background: var(--surface); border-radius: 14px; padding: 24px; width: 100%; max-width: 460px; box-shadow: var(--shadow-md); max-height: 90vh; overflow: auto; }
+.modal h2 { font-size: 18px; margin-bottom: 18px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+
+/* ---- Misc ---- */
+.error { color: var(--danger); background: var(--danger-soft); padding: 9px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; }
+.empty { text-align: center; padding: 50px 20px; color: var(--muted); }
+.row-actions { display: flex; gap: 8px; }
+.toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; }
+.toolbar input { max-width: 280px; }
+.spacer { flex: 1; }
+
+@media (max-width: 720px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .sidebar-foot { display: none; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .main { padding: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+/* ---- Topbar + notification bell ---- */
+.topbar { display: flex; justify-content: flex-end; padding: 14px 34px 0; }
+.bell { position: relative; }
+.bell-btn { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; width: 38px; height: 38px; font-size: 17px; cursor: pointer; }
+.bell-count { position: absolute; top: -6px; right: -6px; background: var(--gold); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; min-width: 17px; height: 17px; display: grid; place-items: center; padding: 0 4px; }
+.bell-menu { position: absolute; right: 0; top: 46px; width: 320px; z-index: 60; padding: 0; overflow: hidden; }
+.bell-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.bell-item { display: block; width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid var(--line); padding: 11px 14px; cursor: pointer; font-size: 13px; font-family: var(--font-body); }
+.bell-item:hover { background: #fafafb; }
+.bell-item.unread { background: var(--primary-soft); }
+.link-btn { background: none; border: none; color: var(--primary); font-weight: 600; font-size: 12px; cursor: pointer; padding: 0; }
+
+/* ---- Score pills & bars ---- */
+.score-pill { font-family: var(--font-mono); font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 6px; background: #f0f1f4; color: var(--muted); }
+.score-pill.good { background: #e6f4ec; color: var(--stage-hired); }
+.score-pill.mid { background: var(--gold-soft); color: var(--gold); }
+.score-pill.low { background: var(--danger-soft); color: var(--danger); }
+.chip.flag { background: var(--gold-soft); color: var(--gold); }
+.score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+.score-label { width: 110px; font-size: 12px; color: var(--muted); }
+.score-track { flex: 1; height: 8px; background: #eceef2; border-radius: 999px; overflow: hidden; }
+.score-fill { height: 100%; background: var(--primary); border-radius: 999px; }
+.score-val { width: 26px; text-align: right; font-size: 12px; font-weight: 600; }
+
+/* ---- Drawer ---- */
+.drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 460px; max-width: 100%; background: var(--surface); box-shadow: var(--shadow-md); padding: 24px; overflow-y: auto; }
+.drawer-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+.drawer-head h2 { font-size: 19px; }
+.drawer-section { border-top: 1px solid var(--line); padding: 16px 0; }
+.section-title { font-family: var(--font-display); font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+.inset { background: #f6f7f9; border: 1px solid var(--line); border-radius: 8px; padding: 14px; margin-top: 12px; }
+.iv-card { border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+.decision { padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; margin: 10px 0; }
+.decision.good { background: #e6f4ec; color: var(--stage-hired); }
+.decision.low { background: var(--gold-soft); color: var(--gold); }
+.activity-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; color: var(--muted); text-transform: capitalize; }
+.draft { background: #f6f7f9; border: 1px solid var(--line); border-radius: 8px; padding: 14px; margin: 12px 0; }
+.draft-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.draft-body { white-space: pre-wrap; font-family: var(--font-body); font-size: 13px; margin: 0; color: var(--ink); }
+
+@media (max-width: 720px) {
+  .drawer { width: 100%; }
+  .topbar { padding: 12px 18px 0; }
+}
+
+/* ---- Ranked candidates page ---- */
+.ranked-row td { padding: 10px 12px; vertical-align: middle; }
+.ranked-row:hover { background: var(--primary-soft); }
+.ranked-row.selected { background: #ede8fa; }
+.ranked-row.selected:hover { background: #e0d8f5; }
+.ranked-expand td { padding: 0; }
+
+/* Subtle link style used on back-links */
+.subtle { color: var(--muted); font-size: 13px; }
+a.subtle:hover { color: var(--ink); }
+
+/* ---- Table base (used by ranked page) ---- */
+.table { width: 100%; border-collapse: collapse; }
+.table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--line); background: var(--bg); }
+.table td { border-bottom: 1px solid var(--line); }
+.table tbody tr:last-child td { border-bottom: none; }
+
+/* ---- Score pill (used on Kanban cards) already exists but ensure base styles ---- */
+.score-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 22px; border-radius: 11px; font-size: 12px; font-weight: 700; padding: 0 7px; }
+.score-pill.good { background: var(--stage-hired); color: #fff; }
+.score-pill.mid  { background: var(--stage-screening); color: #fff; }
+.score-pill.low  { background: var(--danger); color: #fff; }
+
+/* ---- Chip (already exists in original; flag variant) ---- */
+.chip.flag { background: var(--danger-soft); color: var(--danger); }
