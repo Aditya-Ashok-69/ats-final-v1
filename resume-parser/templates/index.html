@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ATS Resume Parser</title>
+
+    <style>
+        body{
+            font-family:Arial;
+            max-width:900px;
+            margin:auto;
+            padding:40px;
+        }
+
+        button{
+            padding:10px 20px;
+            cursor:pointer;
+        }
+
+        textarea{
+            width:100%;
+            height:400px;
+            margin-top:20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>ATS Resume Parser</h1>
+
+<input
+    type="file"
+    id="resume"
+/>
+
+<button onclick="uploadResume()">
+    Extract Resume
+</button>
+
+<h3>Extracted Text</h3>
+
+<textarea id="result"></textarea>
+
+<script>
+
+async function uploadResume(){
+
+    const fileInput =
+        document.getElementById(
+            "resume"
+        );
+
+    const file =
+        fileInput.files[0];
+
+    if(!file){
+        alert(
+            "Select Resume"
+        );
+        return;
+    }
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "file",
+        file
+    );
+
+    const response =
+        await fetch(
+            "/extract",
+            {
+                method:"POST",
+                body:formData
+            }
+        );
+
+    const data =
+        await response.json();
+
+
+
+    document
+    .getElementById("result")
+    .value =
+    JSON.stringify(
+        data,
+        null,
+        2
+    );
+}
+
+</script>
+
+</body>
+</html>

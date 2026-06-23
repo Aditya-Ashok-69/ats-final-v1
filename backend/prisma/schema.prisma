@@ -1,0 +1,196 @@
+// ATS data model.
+// Using SQLite for zero-setup local dev. To move to Postgres later:
+//   1. change provider to "postgresql"
+//   2. set DATABASE_URL to your Postgres connection string
+//   3. run `npx prisma migrate dev`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("RECRUITER") // ADMIN | RECRUITER | HIRING_MANAGER
+  createdAt    DateTime @default(now())
+
+  jobsOwned       Job[]           @relation("HiringManager")
+  applications    Application[]   @relation("ApplicationOwner")
+  notes           Note[]
+  ratings         Rating[]
+  activityLogs    ActivityLog[]
+  interviews      Interview[]     @relation("Interviewer")
+  scorecards      Scorecard[]
+  notifications   Notification[]
+}
+
+model Job {
+  id              String   @id @default(cuid())
+  title           String
+  department      String?
+  location        String?
+  description     String?
+  status          String   @default("OPEN") // OPEN | ON_HOLD | CLOSED
+  hiringManager   User?    @relation("HiringManager", fields: [hiringManagerId], references: [id])
+  hiringManagerId String?
+  createdAt       DateTime @default(now())
+
+  // --- JD matching config ---
+  requiredSkills    String  @default("[]") // JSON array of strings
+  niceToHaveSkills  String  @default("[]") // JSON array of strings
+  minYearsExperience Int    @default(0)
+  scoreThreshold    Int     @default(70)   // resume score >= advances automatically to screening
+  shortlistThreshold Int    @default(70)   // interview avg score needed to shortlist
+  maxInterviewRounds Int    @default(3)    // pipeline stops after this many rounds; 0 = unlimited
+  autoAdvanceThreshold Int  @default(75)   // if avg score >= this after a round, auto-advance to next round
+
+  applications Application[]
+}
+
+model Candidate {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String?
+  resumeUrl  String?
+  resumeText String?  // raw extracted text (for TF-IDF scoring)
+  source     String?
+
+  // --- Structured fields from the hardened parser (LLM-extracted) ---
+  skills                  String?  @default("[]") // JSON: string[]
+  workExperience          String?  @default("[]") // JSON: WorkExperienceEntry[]
+  internships             String?  @default("[]") // JSON: WorkExperienceEntry[]
+  education               String?  @default("[]") // JSON: EducationEntry[]
+  certifications          String?  @default("[]") // JSON: string[]
+  totalExperienceYears    Float?   // overlap-merged calendar years (work only)
+  technicalExperienceYears Float?  // subset: only is_technical_role=true roles
+  parseEngine             String?  // "structured" | "fallback" | null
+  parsedAt                DateTime?
+
+  createdAt  DateTime @default(now())
+
+  applications Application[]
+}
+
+model Application {
+  id          String   @id @default(cuid())
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId String
+  job         Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId       String
+  stage       String    @default("APPLIED") // APPLIED | SCREENING | INTERVIEW | OFFER | HIRED | REJECTED
+  owner       User?     @relation("ApplicationOwner", fields: [ownerId], references: [id])
+  ownerId     String?
+  appliedAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // --- Matching results ---
+  // matchBreakdown JSON shape: { engine, skillCoverage, similarity, experienceMatch,
+  //   matchedSkills, missingSkills, matchedNiceToHave, yearsDetected,
+  //   technicalExperienceYears, totalExperienceYears, experienceSource }
+  matchScore       Int?
+  matchBreakdown   String?
+  flaggedForReview Boolean  @default(false)
+  currentRound     Int      @default(0)
+
+  notes        Note[]
+  ratings      Rating[]
+  activityLogs ActivityLog[]
+  interviews   Interview[]
+  scorecards   Scorecard[]
+  handoff      OnboardingHandoff?
+
+  @@unique([candidateId, jobId])
+}
+
+model Note {
+  id            String   @id @default(cuid())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String
+  author        User     @relation(fields: [authorId], references: [id])
+  authorId      String
+  body          String
+  createdAt     DateTime @default(now())
+}
+
+model Rating {
+  id            String   @id @default(cuid())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String
+  author        User     @relation(fields: [authorId], references: [id])
+  authorId      String
+  score         Int
+  criteria      String?
+  createdAt     DateTime @default(now())
+}
+
+model ActivityLog {
+  id            String   @id @default(cuid())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String
+  actor         User?    @relation(fields: [actorId], references: [id])
+  actorId       String?
+  action        String
+  fromStage     String?
+  toStage       String?
+  createdAt     DateTime @default(now())
+}
+
+model Interview {
+  id            String   @id @default(cuid())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String
+  interviewer   User     @relation("Interviewer", fields: [interviewerId], references: [id])
+  interviewerId String
+  round         Int      @default(1)
+  scheduledAt   DateTime
+  status        String   @default("SCHEDULED")
+  createdAt     DateTime @default(now())
+
+  scorecard     Scorecard?
+}
+
+model Scorecard {
+  id             String   @id @default(cuid())
+  interview      Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  interviewId    String   @unique
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId  String
+  author         User     @relation(fields: [authorId], references: [id])
+  authorId       String
+  overallScore   Int
+  recommendation String
+  criteria       String?
+  comments       String?
+  createdAt      DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  type      String
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model OnboardingHandoff {
+  id             String   @id @default(cuid())
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId  String   @unique
+  status         String   @default("PENDING")
+  hrmsEmployeeId String?
+  payload        String?
+  error          String?
+  createdAt      DateTime @default(now())
+  syncedAt       DateTime?
+}
